@@ -1,0 +1,68 @@
+<odoo>
+    <record id="payment_provider_blackstone_form" model="ir.ui.view">
+        <field name="name">payment.provider.form.blackstone</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='payment_state']" position="after">
+                <group name="blackstone_basic_config" invisible="code != 'blackstone'">
+                    <group string="Basic Settings" name="blackstone_basic">
+                        <field name="blackstone_description"
+                            placeholder="Pay securely with your credit card." />
+                    </group>
+                </group>
+
+                <group name="blackstone_grid_config" invisible="code != 'blackstone'">
+                    <!-- Row 1 -->
+                    <group string="API Credentials" name="blackstone_credentials">
+                        <field name="blackstone_api_username"
+                            placeholder="Enter your Blackstone username"
+                            required="code == 'blackstone'" />
+                        <field name="blackstone_api_password" password="True"
+                            placeholder="Enter your Blackstone password"
+                            required="code == 'blackstone'" />
+                        <field name="blackstone_api_mid" placeholder="Enter your MID"
+                            required="code == 'blackstone'" />
+                        <field name="blackstone_api_cid" placeholder="Enter your CID"
+                            required="code == 'blackstone'" />
+                    </group>
+                    <group string="App Configuration" name="blackstone_app">
+                        <field name="blackstone_app_type" placeholder="Enter App Type"
+                            required="code == 'blackstone'" />
+                        <field name="blackstone_app_key" password="True" placeholder="Enter App Key"
+                            required="code == 'blackstone'" />
+                    </group>
+
+                    <!-- Row 2 -->
+                    <group string="Environment Settings" name="blackstone_environment">
+                        <field name="blackstone_test_mode" widget="boolean_toggle" />
+                        <field name="blackstone_3ds_test_mode" widget="boolean_toggle" />
+                    </group>
+                    <group string="Display Labels" name="blackstone_labels">
+                        <field name="blackstone_label_surcharge" placeholder="Surcharge" />
+                        <field name="blackstone_label_dual_pricing" placeholder="Dual pricing" />
+                    </group>
+                    <group string="Merchant Settings (Surcharges)"
+                        name="blackstone_merchant_settings">
+                        <div class="o_row" colspan="2">
+                            <button name="action_blackstone_sync_settings" type="object"
+                                string="Sync Settings from Gateway" icon="fa-refresh"
+                                class="btn-primary" />
+                            <div class="text-muted ms-2">
+                                Click to fetch Surcharge and Dual Pricing settings from Blackstone.
+                            </div>
+                        </div>
+                        <field name="blackstone_surcharge_enabled" />
+                        <field name="blackstone_surcharge_percent"
+                            invisible="not blackstone_surcharge_enabled" />
+                        <field name="blackstone_card_difference_enabled" />
+                        <field name="blackstone_card_difference_percent"
+                            invisible="not blackstone_card_difference_enabled" />
+                        <field name="blackstone_3ds_enabled" widget="boolean_toggle" force_save="1"
+                            readonly="1" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

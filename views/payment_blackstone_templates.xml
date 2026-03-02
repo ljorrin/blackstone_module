@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inline form for Blackstone payment provider -->
+    <template id="inline_form">
+        <t t-set="inline_form_values"
+            t-value="{
+            'provider_id': provider_sudo.id,
+            'amount': amount,
+            'currency': currency,
+            'partner_id': partner_id,
+            'sale_order_id': sale_order_id,
+            'blackstone_3ds_enabled': provider_sudo.blackstone_3ds_enabled,
+        }" />
+        <div class="o_blackstone_inline_form"
+            t-att-data-provider-id="provider_sudo.id"
+            t-att-data-blackstone-3ds-enabled="'1' if provider_sudo.blackstone_3ds_enabled else '0'">
+            <!-- Surcharge Breakdown -->
+            <div class="mb-3"
+                t-if="provider_sudo.blackstone_surcharge_enabled or provider_sudo.blackstone_card_difference_enabled">
+                <div class="alert alert-info mb-0">
+                    <t t-set="surcharge_amt"
+                        t-value="amount * (provider_sudo.blackstone_surcharge_percent / 100)"
+                        t-if="provider_sudo.blackstone_surcharge_enabled" />
+                    <t t-set="diff_amt"
+                        t-value="amount * (provider_sudo.blackstone_card_difference_percent / 100)"
+                        t-if="provider_sudo.blackstone_card_difference_enabled" />
+
+                    <div t-if="provider_sudo.blackstone_surcharge_enabled"
+                        class="d-flex justify-content-between">
+                        <span>
+                            <strong t-esc="provider_sudo.blackstone_label_surcharge" /> (<span
+                                t-esc="provider_sudo.blackstone_surcharge_percent" /> %) </span>
+                        <span t-esc="surcharge_amt"
+                            t-options='{"widget": "monetary", "display_currency": currency}' />
+                    </div>
+                    <div t-if="provider_sudo.blackstone_card_difference_enabled"
+                        class="d-flex justify-content-between">
+                        <span>
+                            <strong t-esc="provider_sudo.blackstone_label_dual_pricing" /> (<span
+                                t-esc="provider_sudo.blackstone_card_difference_percent" /> %) </span>
+                        <span t-esc="diff_amt"
+                            t-options='{"widget": "monetary", "display_currency": currency}' />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label for="card_number" class="form-label">Número de tarjeta</label>
+                    <input type="text" class="form-control" id="card_number" name="card_number"
+                        placeholder="0000 0000 0000 0000" required="required" maxlength="19"
+                        minlength="13" value="6011402344444445" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
+                    <label for="exp_month" class="form-label">Mes (MM)</label>
+                    <input type="text" class="form-control" id="exp_month" name="exp_month"
+                        placeholder="MM" required="required" maxlength="2" minlength="2" value="12" />
+                </div>
+                <div class="col-4">
+                    <label for="exp_year" class="form-label">Año (YY)</label>
+                    <input type="text" class="form-control" id="exp_year" name="exp_year"
+                        placeholder="YY" required="required" maxlength="2" minlength="2" value="29" />
+                </div>
+                <div class="col-4">
+                    <label for="cvc" class="form-label">CVC</label>
+                    <input type="text" class="form-control" id="cvc" name="cvc" placeholder="123"
+                        required="required" maxlength="4" minlength="3" value="567" />
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
