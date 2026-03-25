@@ -225,7 +225,8 @@ class PaymentTransactionBlackstone(models.Model):
                     self._blackstone_create_token(token_str, data)
 
         else:
-            error_msg = data.get('Message') or _('Payment failed')
+            # Show the specific display message from the API
+            error_msg = data.get('displayMessage') or data.get('Message') or _('Payment failed')
             self._set_error(error_msg)
 
         # Cleanup
@@ -237,10 +238,11 @@ class PaymentTransactionBlackstone(models.Model):
         self.ensure_one()
         payment_token = self.env['payment.token'].create({
             'provider_id': self.provider_id.id,
+            'payment_method_id': self.payment_method_id.id,
             'payment_details': f"{data.get('CardType', 'Card')} •••• {data.get('LastFour', '0000')}",
             'partner_id': self.partner_id.id,
             'provider_ref': token_str,
-            # 'verified': True, # Odoo 16+ often implies verification by success
+            # 'verified': True,
         })
         self.token_id = payment_token.id
         self.write({'token_id': payment_token.id})
